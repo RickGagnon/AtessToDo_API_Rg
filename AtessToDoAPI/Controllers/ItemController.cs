@@ -119,5 +119,22 @@ namespace AtessToDoAPI.Controllers
         {
             return (_context.Items?.Any(e => e.ItemId == id)).GetValueOrDefault();
         }
+
+
+        // GET: api/Item
+        [HttpGet]
+        [Route("useritems")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetItemsByCategories()
+        {
+            if (_context.Items == null)
+            {
+                return NotFound();
+            }
+            return await _context.Categories.Include(p=>p.Items).ToListAsync();
+        }
+
+
+
+
     }
 }
