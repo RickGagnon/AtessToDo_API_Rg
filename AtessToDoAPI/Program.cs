@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AtessTodoContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("AtessTodoContext")));
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options => options.AddPolicy(name: MyAllowSpecificOrigins, policy => policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(options => options.AddPolicy("TodoPolicy", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,9 +22,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("MyAllowSpecificOrigins");
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
+app.UseCors("TodoPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

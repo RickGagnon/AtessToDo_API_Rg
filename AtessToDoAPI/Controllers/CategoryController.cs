@@ -30,7 +30,17 @@ namespace AtessToDoAPI.Controllers
           }
             return await _context.Categories.ToListAsync();
         }
-
+        // GET: api/Category/WithItems   
+        [HttpGet]
+        [Route("categoryitems")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategoriesItems()
+        {
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            return await _context.Categories.Include(p => p.Items).ToListAsync();
+        }
         // GET: api/Category/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
@@ -103,12 +113,15 @@ namespace AtessToDoAPI.Controllers
             {
                 return NotFound();
             }
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.Include(p => p.Items).Where(o=>o.CategoryId==id).FirstOrDefaultAsync();
             if (category == null)
             {
                 return NotFound();
             }
-
+            foreach(Item i in category.Items)
+            {
+                _context.Items.Remove(i);
+            }
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
@@ -119,5 +132,8 @@ namespace AtessToDoAPI.Controllers
         {
             return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
+
+
+
     }
 }

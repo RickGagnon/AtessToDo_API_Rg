@@ -13,10 +13,13 @@ namespace AtessToDoAPI.Models
         public DbSet<Item> Items { get; set; }
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<UserItem> UserItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Item>().ToTable("Items");
             modelBuilder.Entity<Category>().ToTable("Categories");
+            modelBuilder.Entity<UserItem>().HasNoKey();
 
         }
 
