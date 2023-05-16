@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddSignalR();
 builder.Services.AddCors(options => {
-    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
+    options.AddPolicy("CORSPolicy", builder => builder.WithOrigins("http://localhost:4200", "http://localhost:4200", "http://localhost:7095", "https://localhost:7095").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
 builder.Services.AddControllers();
 
@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AtessTodoContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("AtessTodoContext")));
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options => options.AddPolicy("TodoPolicy", policy => policy.WithOrigins("http://localhost:4200","http://localhost:4200","http://localhost:7095","https://localhost:7095").AllowAnyHeader().AllowAnyMethod()));
+//builder.Services.AddCors(options => options.AddPolicy("TodoPolicy", policy => policy.WithOrigins("http://localhost:4200","http://localhost:4200","http://localhost:7095","https://localhost:7095").AllowAnyHeader().AllowAnyMethod()));
 
 
 
@@ -37,7 +37,7 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseEndpoints(endpoints => {
     endpoints.MapControllers();
-    endpoints.MapHub<TodoHub>("/todohub");
+    endpoints.MapHub<TodoHub>("api/todohub");
 });
 app.UseHttpsRedirection();
 
