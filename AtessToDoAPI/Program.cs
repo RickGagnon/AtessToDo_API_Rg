@@ -1,5 +1,5 @@
 using AtessToDoAPI;
-
+using AtessToDoAPI.Hubs;
 using AtessToDoAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +8,12 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSignalR();
+builder.Services.AddCors(options => {
+    options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));
+});
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -28,10 +32,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("TodoPolicy");
-
-app.UseHttpsRedirection();
+app.UseCors("CORSPolicy");
+app.UseRouting();
 app.UseAuthorization();
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllers();
+    endpoints.MapHub<TodoHub>("/todohub");
+});
+app.UseHttpsRedirection();
+
 
 
 app.MapControllers();
