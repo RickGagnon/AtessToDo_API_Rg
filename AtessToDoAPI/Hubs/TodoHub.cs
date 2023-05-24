@@ -9,6 +9,9 @@ namespace AtessToDoAPI.Hubs
         {
             await Clients.All.SendAsync("ReceiveNewTodoItem");
         }
-
+        public async Task RefreshCategories()
+        {
+            await Clients.All.SendAsync("RefreshCategories");
+        }
     }
 }
